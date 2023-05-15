@@ -20,6 +20,8 @@
 
 ### 4. Запускаем проект
 
+`cd app-grafana-prometheus`
+
 `docker-compose up -d --build`
 
 `python3 ./init-grafana.py`
