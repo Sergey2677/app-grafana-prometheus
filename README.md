@@ -2,9 +2,9 @@
 
 ### 1. Установка зависимостей
 
-`apt update`
+`sudo apt update`
 
-`apt install git python3 docker docker-compose curl -y`
+`sudo apt install git python3 docker docker-compose curl -y`
 
 ### 2. Клонируем репозиторий
 
