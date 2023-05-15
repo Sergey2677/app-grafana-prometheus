@@ -22,15 +22,7 @@ def main():
     password = os.getenv('GF_SECURITY_ADMIN_PASSWORD')
     # If there is default password
     if password == '$password':
-        grafana_password = generate_password(10)
-        # Write new password in .env file
-        with open('.env', 'r') as f:
-            old_data = f.read()
-
-        new_data = old_data.replace('$password', grafana_password.strip())
-
-        with open('.env', 'w') as f:
-            f.write(new_data)
+        grafana_password = password
     else:
         grafana_password = os.getenv('GRAFANA_PASSWORD')
 
@@ -49,20 +41,27 @@ def main():
     print('Password - {}'.format(grafana_password))
 
 
-def generate_password(length):
-    alphabet = string.ascii_letters + string.digits + string.punctuation
-    password = ''.join(secrets.choice(alphabet) for i in range(length))
-    return password
-
-
 def prepare_app_json(uid):
     with open('app.json', 'r') as f:
-        old_data = f.read()
-
-    new_data = old_data.replace('${DS_PROMETHEUS}', uid.strip())
-
+        dashboard_json = json.load(f)
+    replace_json_values(dashboard_json, "${DS_PROMETHEUS}", uid)
     with open('app.json', 'w') as f:
-        f.write(new_data)
+        json.dump(dashboard_json, f)
+
+
+def replace_json_values(json_obj, old_value, new_value):
+    if isinstance(json_obj, dict):
+        for key, value in json_obj.items():
+            if value == old_value:
+                json_obj[key] = new_value
+            else:
+                replace_json_values(value, old_value, new_value)
+    elif isinstance(json_obj, list):
+        for i in range(len(json_obj)):
+            if json_obj[i] == old_value:
+                json_obj[i] = new_value
+            else:
+                replace_json_values(json_obj[i], old_value, new_value)
 
 
 def auth(session, grafana_host, grafana_port, grafana_user, grafana_password):
