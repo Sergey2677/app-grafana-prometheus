@@ -6,11 +6,19 @@
 
 `sudo apt install git python3 docker docker-compose curl -y`
 
-### 2. Клонируем репозиторий
+### 2. Вносим пользователя в группу sudo
+
+`sudo groupadd -f docker`
+
+`sudo usermod -aG docker $USER`
+
+`newgrp docker`
+
+### 3. Клонируем репозиторий
 
 `git clone https://github.com/Sergey2677/app-grafana-prometheus.git`
 
-### 3. Запускаем проект
+### 4. Запускаем проект
 
 `docker-compose up -d --build`
 
